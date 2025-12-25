@@ -1,0 +1,64 @@
+/* Users page styles - match dashboard theme */
+:root{
+  --primary-500:#7c3aed;
+  --primary-400:#a78bfa;
+  --muted:#9ca3af;
+  --bg:#ffffff;
+  --card-border:#e5e7eb;
+}
+
+.users-page{ padding:30px 40px; margin-left:260px; min-height:100vh; background:var(--bg); }
+.users-page h1{ font-size:28px; color:#1f2937; margin-bottom:18px; }
+
+.user-form, .user-list{ background:#fff; border:1px solid var(--card-border); border-radius:12px; padding:16px; box-shadow:0 4px 18px rgba(16,24,40,0.04); margin-bottom:18px; }
+
+.user-form{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; align-items:center; }
+.user-form label{ font-size:13px; color:var(--muted); margin-bottom:6px; }
+.user-form input, .user-form select{ padding:10px 12px; border:1px solid #f1f5f9; border-radius:8px; font-size:14px; }
+
+/* Make main inputs wider and more prominent */
+#name, #email, #password{
+  grid-column: 1 / -1;
+  width: 100%;
+  max-width: 900px;
+  padding: 14px 16px;
+  font-size: 16px;
+  border: 1px solid #e6e6f0;
+  box-shadow: 0 2px 8px rgba(124,58,237,0.06);
+}
+
+/* Slightly increase select size to match visual weight */
+#role{
+  padding:10px 12px; font-size:15px;
+}
+.user-form .form-actions{ grid-column:1 / -1; display:flex; gap:8px; }
+.user-form button{ padding:10px 14px; border-radius:8px; border:none; cursor:pointer; font-weight:600; }
+.user-form #submitBtn{ background:linear-gradient(135deg,var(--primary-500),var(--primary-400)); color:#fff; }
+.user-form #cancelEdit{ background:#f3f4f6; }
+.error{ color:#b00020; font-size:13px; margin-top:6px; }
+
+.user-list table{ width:100%; border-collapse:collapse; font-size:14px; }
+.user-list th, .user-list td{ text-align:left; padding:12px 10px; border-bottom:1px solid #f3f4f6; }
+.user-list thead th{ color:#374151; font-weight:600; font-size:13px; }
+.user-list tbody tr:hover{ background:#fbfbfd; }
+
+.action-btn{ padding:8px 10px; border-radius:8px; border:none; cursor:pointer; font-weight:600; }
+.edit-btn{ background: rgba(124,58,237,0.06) }
+.delete-btn{ background:#ef476f; color:#fff; }
+
+/* Responsive */
+    .edit-btn{ background: rgba(124,58,237,0.06) }
+    .edit-btn:hover{ transform: translateY(-2px); box-shadow: 0 8px 20px rgba(124, 58, 237, 0.18); }
+    .edit-btn{ background: linear-gradient(135deg,var(--primary-500),var(--primary-400)); color:#fff; }
+@media (max-width:900px){
+  .users-page{ margin-left: 180px; padding:20px; }
+  .user-form{ grid-template-columns:1fr; }
+}
+
+@media (max-width:600px){
+  .users-page{ margin-left:0; }
+  .user-list table, .user-list thead, .user-list tbody, .user-list th, .user-list td, .user-list tr{ display:block; }
+  .user-list thead{ display:none; }
+  .user-list tbody tr{ margin-bottom:12px; padding:12px; border:1px solid var(--card-border); border-radius:8px; }
+  .user-list td{ padding:6px 0; }
+}

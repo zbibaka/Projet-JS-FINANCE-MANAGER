@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="assets/css/dashboard.css" />
+    <link rel="stylesheet" href="assets/css/users.css" />
+  </head>
+  <body>
+    <div class="header-section">
+      <header>
+        <div class="header-left">
+          <h2 class="dashboard-greeting">Welcome</h2>
+        </div>
+        <div class="header-right">
+          <div class="header-buttons">
+            <button class="research-button">
+              <i data-lucide="search"></i>
+            </button>
+            <button class="notification-button">
+              <i data-lucide="bell"></i>
+            </button>
+          </div>
+        </div>
+
+        <button class="profile-button">
+          <img src="" alt="profile picture" class="profile-picture" />
+          <h4 class="username-name"></h4>
+          <p class="username-mail"></p>
+        </button>
+      </header>
+    </div>
+
+    <aside class="sidebar">
+      <div class="logo">
+        <img src="assets/img/emsilogo.png" alt="FinSet" />
+        <span>FinEmsi</span>
+      </div>
+
+      <nav class="nav-items">
+        <a href="#" class="nav-item active" data-page="dashboard">
+          <i data-lucide="home"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="#" class="nav-item" data-page="transactions">
+          <i data-lucide="arrow-left-right"></i>
+          <span>Transactions</span>
+        </a>
+        <a href="#" class="nav-item" data-page="wallet">
+          <i data-lucide="wallet"></i>
+          <span>Wallet</span>
+        </a>
+        <a href="#" class="nav-item" data-page="goals">
+          <i data-lucide="target"></i>
+          <span>Goals</span>
+        </a>
+        <a href="#" class="nav-item" data-page="users">
+          <i data-lucide="users"></i>
+          <span>Users</span>
+        </a>
+        <a href="#" class="nav-item" data-page="settings">
+          <i data-lucide="settings"></i>
+          <span>Settings</span>
+        </a>
+        <a href="#" class="nav-item" data-page="logout">
+          <i data-lucide="log-out"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+
+      <div class="theme-buttons">
+        <button class="theme-btn">☀️</button>
+        <button class="theme-btn">🌙</button>
+      </div>
+    </aside>
+    <div id="dashboard-content" class="content-section active">
+      <div class="stats-container">
+        <div class="balance-stat-card">
+          <div class="stat-header">
+            <h3>Total balance</h3>
+            <button class="expand-btn">
+              <i data-lucide="arrow-up-right"></i>
+            </button>
+          </div>
+
+          <div class="balance-value">$15,700<span class="light">.00</span></div>
+
+          <div class="stat-change positive">
+            <i data-lucide="trending-up"></i>
+            <span class="balance-percentage">12.1%</span>
+            <span class="label">vs last month</span>
+          </div>
+        </div>
+
+        <div class="income-stat-card">
+          <div class="stat-header">
+            <h3>Income</h3>
+            <button class="expand-btn">
+              <i data-lucide="arrow-up-right"></i>
+            </button>
+          </div>
+
+          <div class="income-value">$8,500<span class="light">.00</span></div>
+        </div>
+
+        <div class="expenses-stat-card">
+          <div class="stat-header">
+            <h3>Expenses</h3>
+            <button class="expand-btn">
+              <i data-lucide="arrow-up-right"></i>
+            </button>
+          </div>
+
+          <div class="expenses-value">$6,222<span class="light">.00</span></div>
+
+          <div class="stat-change positive">
+            <i data-lucide="trending-down"></i>
+            <span class="expenses-percentage">2.4</span>
+            <span class="label">vs last month</span>
+          </div>
+        </div>
+
+        <div class="saving-stat-card">
+          <div class="stat-header">
+            <h3>Total Savings</h3>
+            <button class="expand-btn">
+              <i data-lucide="arrow-up-right"></i>
+            </button>
+          </div>
+
+          <div class="saving-value">$32,900<span class="light">.00</span></div>
+
+          <div class="stat-change positive">
+            <i data-lucide="trending-up"></i>
+            <span class="income-percentage">12.3</span>
+            <span class="label">vs last month</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="charts-section">
+        <!-- Money Flow Chart (2/3 width) -->
+        <div class="chart-widget">
+          <div class="chart-header">
+            <h3>Money flow</h3>
+            <div class="chart-legend">
+              <span class="legend-item">
+                <span class="dot income"></span> Income
+              </span>
+              <span class="legend-item">
+                <span class="dot expense"></span> Expense
+              </span>
+            </div>
+            <select class="filter-select">
+              <option>All accounts</option>
+              <option>Savings</option>
+              <option>Credit Card</option>
+            </select>
+            <select class="filter-select">
+              <option>This year</option>
+              <option>Last year</option>
+              <option>Last 6 months</option>
+            </select>
+          </div>
+          <div class="chart-container">
+            <canvas id="moneyFlowChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Budget Pie Chart (1/3 width) -->
+        <div class="budget-widget">
+          <div class="budget-header">
+            <h3>Budget</h3>
+            <button class="expand-btn-chart">
+              <i data-lucide="arrow-up-right"></i>
+            </button>
+          </div>
+          <div class="chart-container-pie">
+            <canvas id="budgetPieChart"></canvas>
+          </div>
+          <div class="budget-legend">
+            <div class="budget-item">
+              <span class="budget-dot" style="background: #7c3aed"></span>
+              Cafe & Restaurants
+            </div>
+            <div class="budget-item">
+              <span class="budget-dot" style="background: #c4b5fd"></span>
+              Entertainment
+            </div>
+            <div class="budget-item">
+              <span class="budget-dot" style="background: #a78bfa"></span>
+              Investments
+            </div>
+            <div class="budget-item">
+              <span class="budget-dot" style="background: #1f2937"></span>
+              Food & Groceries
+            </div>
+            <div class="budget-item">
+              <span class="budget-dot" style="background: #6b7280"></span>
+              Health & Beauty
+            </div>
+            <div class="budget-item">
+              <span class="budget-dot" style="background: #d1d5db"></span>
+              Traveling
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="income-expenses-input">
+        <form class="transaction-form">
+          <div class="form-group">
+            <label for="amount" class="form-label">Amount:</label>
+            <input
+              type="number"
+              id="amount"
+              class="form-input amount-input"
+              placeholder="0.00"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="category" class="form-label">Category:</label>
+            <select id="category" class="form-select category-select" required>
+              <option value="">Select a category</option>
+              <option value="Food-Groceries">Food & Groceries</option>
+              <option value="Cafe-Restau">Cafe & Restaurants</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Transport">Transport</option>
+              <option value="Bills">Bills</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Type:</label>
+            <div class="radio-group">
+              <div class="radio-item">
+                <input
+                  type="radio"
+                  id="income-radio"
+                  name="type"
+                  class="form-radio income-radio"
+                  value="income"
+                  required
+                />
+                <label for="income-radio" class="radio-label">Income</label>
+              </div>
+              <div class="radio-item">
+                <input
+                  type="radio"
+                  id="expense-radio"
+                  name="type"
+                  class="form-radio expense-radio"
+                  value="expense"
+                  required
+                />
+                <label for="expense-radio" class="radio-label">Expense</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="date" class="form-label">Date:</label>
+            <input
+              type="date"
+              id="date"
+              class="form-input form-date"
+              required
+            />
+          </div>
+
+          <button type="submit" class="add-transaction-btn">
+            Add Transaction
+          </button>
+        </form>
+      </div>
+    </div>
+    <div id="goals-content" class="content-section">
+      <h2>GOAL:</h2>
+
+      <div class="goals-container">
+        <!-- Form on the left -->
+        <div class="goals-form">
+          <form class="goalsgroup-form">
+            <label for="goal-name">Goal Name:</label>
+            <input
+              type="text"
+              id="goal-name"
+              class="form-input"
+              placeholder="e.g., MacBook Pro"
+              required
+            />
+
+            <label for="goal-amount">Target Amount:</label>
+            <input
+              type="number"
+              id="goal-amount"
+              class="form-input amount-input"
+              placeholder="0.00"
+              required
+            />
+
+            <label for="current-saved-amount">Current Saved Amount:</label>
+            <input
+              type="number"
+              id="current-saved-amount"
+              class="form-input"
+              placeholder="0.00"
+              required
+            />
+
+            <button type="submit" class="add-goal-btn">Add Goal</button>
+          </form>
+        </div>
+
+        <!-- Tableau de Goals-->
+        <div class="goals-list">
+          <h3>Your goals:</h3>
+          <table id="goal-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Target</th>
+                <th>Saved</th>
+                <th>Configues</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- --------------------------Wallet Section------------------------------------- -->
+    <div id="wallet-content" class="content-section">
+      <h2>Wallet</h2>
+
+      <div class="cards-container">
+        <!-- Credit Card -->
+        <div class="card-section">
+          <h3>Credit Card</h3>
+          <div id="credit-card" class="credit-card">
+            <div class="card-chip"></div>
+            <div class="card-number">•••• •••• •••• ••••</div>
+            <div class="card-footer">
+              <div>
+                <p class="card-label">CARDHOLDER</p>
+                <p class="card-holder">YOUR NAME</p>
+              </div>
+              <div>
+                <p class="card-label">EXP</p>
+                <p class="card-expiry">MM/YY</p>
+              </div>
+            </div>
+          </div>
+          <button class="card-btn" onclick="GenerateCardCard()">
+            Generate New Card
+          </button>
+          <button class="card-btn delete-btn" onclick="deleteCreditCard()">
+            Delete Card
+          </button>
+        </div>
+
+        <!-- Savings Card -->
+        <div class="card-section">
+          <h3>Savings Card</h3>
+          <div id="savings-card" class="savings-card" style="display: none">
+            <div class="card-chip"></div>
+            <div class="card-number">•••• •••• •••• ••••</div>
+            <div class="card-footer">
+              <div>
+                <p class="card-label">CARDHOLDER</p>
+                <p class="card-holder">YOUR NAME</p>
+              </div>
+              <div>
+                <p class="card-label">EXP</p>
+                <p class="card-expiry">MM/YY</p>
+              </div>
+            </div>
+          </div>
+          <button
+            id="create-savings-btn"
+            class="card-btn"
+            onclick="GenerateSavingsCard()"
+          >
+            Create Savings Card
+          </button>
+          <button
+            id="delete-savings-btn"
+            class="card-btn delete-btn"
+            onclick="deleteSavingsCard()"
+            style="display: none"
+          >
+            Delete Card
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="users-content" class="content-section">
+      <div class="users-page container">
+        <h1>Gestion des utilisateurs</h1>
+
+        <section class="user-form">
+          <h2 id="form-title">Ajouter un utilisateur</h2>
+          <form id="userForm">
+            <label>Nom</label>
+            <input type="text" id="name" required />
+            <label>Email</label>
+            <input type="email" id="email" required />
+            <label>Mot de passe</label>
+            <input type="password" id="password" required />
+            <label>Role</label>
+            <select id="role">
+              <option value="user">user</option>
+              <option value="admin">admin</option>
+            </select>
+            <div class="form-actions">
+              <button type="submit" id="submitBtn">Ajouter</button>
+              <button type="button" id="cancelEdit" style="display:none">Annuler</button>
+            </div>
+            <p id="form-error" class="error"></p>
+          </form>
+        </section>
+
+        <section class="user-list">
+          <h2>Liste des utilisateurs</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usersTbody"></tbody>
+          </table>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      lucide.createIcons();
+    </script>
+    <script src="assets/js/dashboard.js"></script>
+    <script src="assets/js/users.js"></script>
+  </body>
+</html>
