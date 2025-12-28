@@ -57,7 +57,7 @@
           <i data-lucide="target"></i>
           <span>Goals</span>
         </a>
-        <a href="#" class="nav-item" data-page="users">
+        <a href="#" class="nav-item" data-page="users" id="User-nav">
           <i data-lucide="users"></i>
           <span>Users</span>
         </a>
@@ -173,7 +173,7 @@
         <!-- Budget Pie Chart (1/3 width) -->
         <div class="budget-widget">
           <div class="budget-header">
-            <h3>Budget</h3>
+            <h3>Budget (expense)</h3>
             <button class="expand-btn-chart">
               <i data-lucide="arrow-up-right"></i>
             </button>
@@ -444,11 +444,44 @@
           </table>
         </section>
       </div>
+      
     </div>
+
+
+        <!-- -----------------------transaction Section---------- -------->
+    <div id="transactions-content" class="content-section">
+      <h2>Transactions</h2>
+      <div class="transaction-conatainer">
+        <div class="transaction-container-header">
+          <h3 class="transaction-header">Recent Transactions</h3>
+          <select id="transaction-filter" class="filter-select">
+            <option value="all">All Transactions</option>
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+          </select>
+        </div>
+        <table class="transaction-table">
+          <thead>
+            <tr>
+              <th>DATE</th>
+              <th>AMOUNT</th>
+              <th>METHODE</th>
+              <th>CATEGORY</th>
+            </tr>
+          </thead>
+          <tbody id="transaction-tbody">
+            <!-- Transactions will be dynamically added here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+
 
     <script>
       lucide.createIcons();
     </script>
+    
     <script src="assets/js/dashboard.js"></script>
     <script src="assets/js/users.js"></script>
   </body>

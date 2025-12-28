@@ -22,6 +22,11 @@ if (userRole === "admin") {
     localStorage.getItem("userEmail");
 }
 
+if(userRole != "admin"){
+  const user_nav = document.querySelector("#User-nav");
+  user_nav.style.display = "none";
+}
+
 // MONEY FLOW CHART
 
 const ctx = document.getElementById("moneyFlowChart").getContext("2d");
@@ -206,14 +211,12 @@ formTransaction.addEventListener("submit", function (e) {
   };
 
   transactions.push(newTransaction);
-
-  console.log("New Transaction Added:", newTransaction);
-  console.log("All Transactions:", transactions);
-
+  
   formTransaction.reset();
-
+  localStorage.setItem("transactions", JSON.stringify(transactions));
   updateChartWithTransactions();
   updatePieChartWithTransactions();
+  displayTransactionsTable(); // Call this to update table
 });
 
 function processTransactionData() {
@@ -373,6 +376,9 @@ document.querySelectorAll(".nav-item").forEach((link) => {
     // Show the selected section
     const page = this.getAttribute("data-page");
     document.getElementById(page + "-content").classList.add("active");
+    if (page === "transactions") {
+      displayTransactionsTable();
+    }
     // Show the selected section
     const po = this.getAttribute("data-page");
     console.log("Page:", page);
@@ -615,3 +621,91 @@ function loadCards() {
 }
 
 document.addEventListener("DOMContentLoaded", loadCards);
+
+// TRANSACTION PAGE 
+
+let transactionsArray = [];
+
+function retrieveTransaction(newTransaction) {
+  const newTableTransaction = {
+    date: newTransaction.date,
+    amount: newTransaction.amount,
+    method: creditCardData.number.slice(-4),
+    category: newTransaction.category,
+    type: newTransaction.type,
+    symbol: newTransaction.type === "income" ? '+' : '-'
+  };
+
+  transactionsArray.push(newTableTransaction);
+  localStorage.setItem("transactions", JSON.stringify(transactionsArray));
+  console.log("New Transaction for Table:", newTableTransaction);
+  return newTableTransaction;
+}
+
+function displayTransactionsTable() {
+  // LOAD from localStorage first!
+  const saved = localStorage.getItem("transactions");
+  if (saved) {
+    transactions = JSON.parse(saved);
+  }
+  
+  const tbody = document.querySelector("#transaction-tbody");
+  console.log("Transactions array:", transactions);
+  console.log("Transactions length:", transactions.length);
+  
+  if (!tbody) return;
+  
+  tbody.innerHTML = "";
+
+  if (transactions.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5">No transactions yet</td></tr>';
+    return;
+  }
+
+  transactions.forEach((t) => {
+    const row = tbody.insertRow();
+    row.insertCell(0).innerText = t.date;
+    const amountCell = row.insertCell(1);
+    amountCell.innerText = (t.type === "income" ? "+" : "-") + "$" + t.amount;
+    amountCell.classList.add('transaction-amount', t.type);
+    const methodCell = row.insertCell(2);
+    methodCell.innerHTML = '<i data-lucide="credit-card"></i> **' + creditCardData.number.slice(-4);
+    row.insertCell(3).innerText = t.category;
+  });
+  lucide.createIcons();
+}
+// Filter transactions
+document.getElementById('transaction-filter').addEventListener('change', function(e) {
+  const filterValue = e.target.value;
+  const tbody = document.querySelector("#transaction-tbody");
+  
+  tbody.innerHTML = "";
+  
+  let filtered = transactions;
+  
+  if (filterValue === 'income') {
+    filtered = transactions.filter(t => t.type === 'income');
+  } else if (filterValue === 'expense') {
+    filtered = transactions.filter(t => t.type === 'expense');
+  }
+  
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5">No transactions</td></tr>';
+    return;
+  }
+  
+  filtered.forEach((t) => {
+    const row = tbody.insertRow();
+    row.insertCell(0).innerText = t.date;
+    const amountCell = row.insertCell(1);
+    amountCell.innerText = (t.type === "income" ? "+" : "-") + "$" + t.amount;
+    amountCell.classList.add('transaction-amount', t.type);
+    const methodCell = row.insertCell(2);
+    methodCell.innerHTML = '<i data-lucide="credit-card"></i> Card ****';
+    row.insertCell(3).innerText = t.category;
+  });
+  
+  lucide.createIcons();
+});
+// Load on page load
+displayTransactionsTable();

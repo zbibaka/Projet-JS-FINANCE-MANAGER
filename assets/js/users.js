@@ -1,81 +1,150 @@
-// Simple users management bound to dashboard (localStorage)
-(function(){
-  const STORAGE_KEY = 'fm_users_v1';
-  const form = document.getElementById('userForm');
-  const tbody = document.getElementById('usersTbody');
-  const submitBtn = document.getElementById('submitBtn');
-  const cancelBtn = document.getElementById('cancelEdit');
-  const errorEl = document.getElementById('form-error');
+// ===== USER MANAGEMENT =====
 
-  let users = [];
-  let editingId = null;
+// Check if user is admin
 
-  function load(){
-    try{ users = JSON.parse(localStorage.getItem(STORAGE_KEY))||[];}catch(e){users=[]}
-    render();
+
+// Storage key for localStorage
+const STORAGE_KEY = 'fm_users_v1';
+
+// Get HTML elements
+const form = document.getElementById('userForm');
+const tbody = document.getElementById('usersTbody');
+const submitBtn = document.getElementById('submitBtn');
+const cancelBtn = document.getElementById('cancelEdit');
+const errorEl = document.getElementById('form-error');
+
+// Variables
+let users = [];
+let editingId = null;
+
+// Load users from localStorage
+function loadUsers() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    users = JSON.parse(saved);
   }
+  displayUsers();
+}
 
-  function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(users)); }
+// Save users to localStorage
+function saveUsers() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
+}
 
-  function render(){
-    if(!tbody) return;
-    tbody.innerHTML = '';
-    if(users.length===0){ tbody.innerHTML = '<tr><td colspan="4">Aucun utilisateur</td></tr>'; return; }
-    users.forEach(u=>{
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${escape(u.name)}</td>
-        <td>${escape(u.email)}</td>
-        <td>${escape(u.role)}</td>
-        <td>
-          <button class="action-btn edit-btn" data-id="${u.id}">Modifier</button>
-          <button class="action-btn delete-btn" data-id="${u.id}">Supprimer</button>
-        </td>`;
-      tbody.appendChild(tr);
+// Display all users in table
+function displayUsers() {
+  tbody.innerHTML = '';
+  
+  if (users.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4">No users found</td></tr>';
+    return;
+  }
+  
+  users.forEach(user => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${user.name}</td>
+      <td>${user.email}</td>
+      <td>${user.role}</td>
+      <td>
+        <button class="action-btn edit-btn" data-id="${user.id}">Edit</button>
+        <button class="action-btn delete-btn" data-id="${user.id}">Delete</button>
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+// Handle form submission (Add or Update user)
+form.addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const role = document.getElementById('role').value;
+  
+  // Validate inputs
+  if (!name || !email || !password) {
+    errorEl.textContent = 'Please fill all fields';
+    return;
+  }
+  
+  if (!email.includes('@')) {
+    errorEl.textContent = 'Invalid email';
+    return;
+  }
+  
+  // If editing existing user
+  if (editingId) {
+    const user = users.find(u => u.id === editingId);
+    if (user) {
+      user.name = name;
+      user.email = email;
+      user.role = role;
+    }
+    editingId = null;
+    submitBtn.textContent = 'Add User';
+    cancelBtn.style.display = 'none';
+  } else {
+    // Add new user
+    users.push({
+      id: Date.now().toString(),
+      name: name,
+      email: email,
+      role: role
     });
   }
+  
+  errorEl.textContent = '';
+  form.reset();
+  saveUsers();
+  displayUsers();
+});
 
-  function escape(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+// Handle Edit and Delete buttons
+tbody.addEventListener('click', function(e) {
+  const button = e.target;
+  const userId = button.dataset.id;
+  
+  if (button.classList.contains('edit-btn')) {
+    editUser(userId);
+  } else if (button.classList.contains('delete-btn')) {
+    deleteUser(userId);
+  }
+});
 
-  form && form.addEventListener('submit', function(e){
-    e.preventDefault();
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
-    const role = document.getElementById('role').value;
-    if(!name||!email||!password){ errorEl.textContent='Remplir tous les champs.'; return; }
-    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ errorEl.textContent='Email invalide.'; return; }
+// Delete user
+function deleteUser(id) {
+  if (confirm('Delete this user?')) {
+    users = users.filter(u => u.id !== id);
+    saveUsers();
+    displayUsers();
+  }
+}
 
-    if(editingId){
-      const user = users.find(u=>u.id===editingId);
-      if(user){ user.name=name; user.email=email; user.role=role; }
-      editingId=null; submitBtn.textContent='Ajouter'; cancelBtn.style.display='none';
-    } else {
-      users.push({ id:Date.now().toString(), name, email, role });
-    }
-    errorEl.textContent=''; form.reset(); save(); render();
-  });
+// Load user data into form for editing
+function editUser(id) {
+  const user = users.find(u => u.id === id);
+  if (!user) return;
+  
+  document.getElementById('name').value = user.name;
+  document.getElementById('email').value = user.email;
+  document.getElementById('role').value = user.role;
+  
+  editingId = id;
+  submitBtn.textContent = 'Update User';
+  cancelBtn.style.display = 'inline-block';
+}
 
-  tbody && tbody.addEventListener('click', function(e){
-    const btn = e.target.closest('button'); if(!btn) return;
-    const id = btn.dataset.id;
-    if(btn.classList.contains('edit-btn')){
-      startEdit(id);
-    } else if(btn.classList.contains('delete-btn')){
-      if(confirm('Supprimer cet utilisateur ?')){ users = users.filter(u=>u.id!==id); save(); render(); }
-    }
-  });
+// Cancel editing
+cancelBtn.addEventListener('click', function() {
+  form.reset();
+  editingId = null;
+  submitBtn.textContent = 'Add User';
+  cancelBtn.style.display = 'none';
+  errorEl.textContent = '';
+});
 
-  cancelBtn && cancelBtn.addEventListener('click', function(){ form.reset(); 
-    editingId=null; submitBtn.textContent='Ajouter'; 
-    cancelBtn.style.display='none'; errorEl.textContent=''; });
-
-  function startEdit(id){ const u = users.find(x=>x.id===id);
-     if(!u) return; document.getElementById('name').value=u.name; 
-     document.getElementById('email').value=u.email; document.getElementById('password').value=''; 
-     document.getElementById('role').value=u.role; editingId=id;
-      submitBtn.textContent='Enregistrer'; 
-      cancelBtn.style.display='inline-block'; }
-
-  load();
-})();
+// Load users when page loads
+loadUsers();
