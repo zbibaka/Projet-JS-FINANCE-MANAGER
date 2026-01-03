@@ -65,16 +65,7 @@
           <i data-lucide="settings"></i>
           <span>Settings</span>
         </a>
-        <a href="#" class="nav-item" data-page="logout">
-          <i data-lucide="log-out"></i>
-          <span>Logout</span>
-        </a>
       </nav>
-
-      <div class="theme-buttons">
-        <button class="theme-btn">☀️</button>
-        <button class="theme-btn">🌙</button>
-      </div>
     </aside>
     <div id="dashboard-content" class="content-section active">
       <div class="stats-container">
@@ -476,12 +467,32 @@
       </div>
     </div>
     
+    <div id="settings-content" class="content-section">
+      <h2>Settings</h2>
+        <div class="theme-buttons">
+        <button class="theme-btn">☀️</button>
+        <button class="theme-btn">🌙</button>
+      </div>
 
+      <div class="change-language">
+        <label for="language-select">Language:</label>
+        <select id="language-select" class="filter-select">
+          <option value="en">English</option>
+          <option value="fr">Français</option>
+        </select>
+      </div>
+            <div class="logout">
+        <button id="logout-button" class="logout-btn" type="button" onclick="deleteSession()">
+          <i data-lucide="log-out"></i>
+          <span>Logout</span>
+        </button>
+      </div>
+    </div>
 
     <script>
       lucide.createIcons();
     </script>
-    
+    <script src="assets/js/i18n.js"></script>
     <script src="assets/js/dashboard.js"></script>
     <script src="assets/js/users.js"></script>
   </body>

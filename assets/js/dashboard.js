@@ -709,3 +709,12 @@ document.getElementById('transaction-filter').addEventListener('change', functio
 });
 // Load on page load
 displayTransactionsTable();
+
+// LOGOUT FUNCTIONALITY
+function deleteSession() {
+  localStorage.removeItem("loggedInUser");
+  localStorage.removeItem("userRole");
+  localStorage.removeItem("userEmail");
+  localStorage.removeItem("userName");
+  window.location.href = "index.html";
+}
