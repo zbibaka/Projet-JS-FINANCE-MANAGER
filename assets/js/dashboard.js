@@ -479,6 +479,8 @@ function deleteGoal(idx) {
   }
 }
 
+
+
 // --------------------------------WALLET------------------------
 
 function GenerateCardNumber() {
