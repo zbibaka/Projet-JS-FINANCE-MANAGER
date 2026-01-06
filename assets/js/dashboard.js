@@ -3,8 +3,23 @@ console.log("userRole:", localStorage.getItem("userRole"));
 console.log("userName:", localStorage.getItem("userName"));
 console.log("userEmail:", localStorage.getItem("userEmail"));
 console.log("loggedInUser:", localStorage.getItem("loggedInUser"));
+
+
 const userRole = localStorage.getItem("userRole") || "user";
 const userName = localStorage.getItem("userName");
+
+// for income and expense cards
+   window.addEventListener('DOMContentLoaded', function() {
+     let savedIncome = localStorage.getItem("income") || "0";
+     let savedExpense = localStorage.getItem("expense") || "0";
+     
+     let incomeCard = document.querySelector(".income-value");
+     let expenseCard = document.querySelector(".expenses-value");
+     
+     if (incomeCard) incomeCard.textContent = "$" + savedIncome;
+     if (expenseCard) expenseCard.textContent = "$" + savedExpense;
+   });
+
 
 document.querySelector(
   ".dashboard-greeting"
@@ -25,6 +40,14 @@ if (userRole === "admin") {
 if(userRole != "admin"){
   const user_nav = document.querySelector("#User-nav");
   user_nav.style.display = "none";
+}
+
+// Only set to 0 if there's no existing value
+if (localStorage.getItem("income") === null) {
+  localStorage.setItem("income", "0");
+}
+if (localStorage.getItem("expense") === null) {
+  localStorage.setItem("expense", "0");
 }
 
 // MONEY FLOW CHART
@@ -217,6 +240,12 @@ formTransaction.addEventListener("submit", function (e) {
   updateChartWithTransactions();
   updatePieChartWithTransactions();
   displayTransactionsTable(); // Call this to update table
+  if(type === "income"){
+    updateIncomeCard(parseFloat(amount));
+  }
+  else if(type === "expense"){
+    updateExpenseCard(parseFloat(amount));
+  }
 });
 
 function processTransactionData() {
@@ -711,6 +740,23 @@ document.getElementById('transaction-filter').addEventListener('change', functio
 });
 // Load on page load
 displayTransactionsTable();
+
+function updateIncomeCard(newIncome){
+  let incomeCard = document.querySelector(".income-value");
+  let oldincome = parseFloat(localStorage.getItem("income")) || 0;
+  oldincome += parseFloat(newIncome);
+  incomeCard.textContent = "$" + oldincome;
+  localStorage.setItem("income", oldincome);
+}
+
+function updateExpenseCard(newExpense){
+  let expenseCard = document.querySelector(".expenses-value");
+  let oldexpense = parseFloat(localStorage.getItem("expense")) || 0;
+  oldexpense += parseFloat(newExpense);
+  expenseCard.textContent = "$" + oldexpense;
+  localStorage.setItem("expense", oldexpense);
+}
+
 
 // LOGOUT FUNCTIONALITY
 function deleteSession() {
